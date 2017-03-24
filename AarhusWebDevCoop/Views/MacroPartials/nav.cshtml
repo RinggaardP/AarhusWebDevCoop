@@ -1,0 +1,49 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+
+@*
+    This snippet displays a list of links of the pages immediately under the top-most page in the content tree.
+    This is the home page for a standard website.
+    It also highlights the current active page/section in the navigation with the css class "current".
+*@
+
+@{ var selection = CurrentPage.Site().Children.Where("Visible"); }
+    <ul class="nav navbar-nav">
+        <li><a href="@CurrentPage.Site().Url">@CurrentPage.Site().Name</a></li>
+        @foreach (var menuItem in CurrentPage.Site().Children.Where("UmbracoNavHide == false")) {
+        var isProtected = umbraco.library.IsProtected(menuItem.id, menuItem.path);
+        var loginAccess = umbraco.library.IsProtected(menuItem.id, menuItem.path)
+        && umbraco.library.HasAccess(menuItem.id, menuItem.path);
+
+
+        if (!isProtected || loginAccess) {
+
+        var subItems = menuItem.Descendants().Where("Visible");
+        if (subItems.Count() > 0 && menuItem.Name == "Projects")
+        {
+        <li class="dropdown">
+            <a href="@menuItem.Url" class="dropdown-toggle" data-toggle="dropdown">@menuItem.Name <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+
+                @** ONLY GOING TO USE THIS IF I DROPDOWN TOGGLE RATHER THAN HOVER - WOULD DUPLICATE LINK OTHERWISE **@
+                @**
+                <li><a href="@menuItem.Url">@menuItem.Name</a></li>  **@
+
+				@**var selection2 = CurrentPage.Site().FirstChild("projectsOverview").Children("projectItem").Where("Visible && projectStatus == 23");
+				**@
+                @** WHERE Level==3 LOADS ONLY THE CHILDREN OF THE 2nd LEVEL **@
+                @foreach (dynamic secondPage in menuItem.Children("projectItem").Where("Visible && projectStatus == 23"))
+                {
+                <li>
+                    <a href="@secondPage.Url">@secondPage.Name</a>
+                </li>
+                }
+            </ul>
+        </li>
+        }
+        else
+        {
+        <li><a href="@menuItem.Url">@menuItem.Name</a></li>
+        } }
+        }
+    </ul>

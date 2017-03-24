@@ -1,0 +1,5 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@foreach(var item in CurrentPage.Children.Where("bodyText.Contains(\"cat\")"))
+{
+    @item.Name 
+}

@@ -1,0 +1,25 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage<ContentModels.Members>
+@using Umbraco.Core;
+@using Umbraco.Core.Models;
+@using Umbraco.Core.Services;
+@using ContentModels = Umbraco.Web.PublishedContentModels;
+
+@{
+	Layout = "Master.cshtml";
+}
+
+@{
+var memberService = ApplicationContext.Current.Services.MemberService;
+int totalRecords;
+}
+
+@foreach (var user in memberService.GetMembersByMemberType("Active"))
+{
+<h1>@(user.Name)</h1>
+    @user.GetValue("address");<br />
+    @user.GetValue("zip"); 
+@user.GetValue("city");<br />
+ <span>Email: </span>@(user.Email)<br />
+<span>Skills: </span>@user.GetValue("skills");<br />
+ //TODO fix the skills to be readable values                  
+}

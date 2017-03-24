@@ -1,0 +1,30 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+	Layout = "Master.cshtml";
+}
+
+@{
+	var selection = CurrentPage.Site().FirstChild("projectsOverview").Children("projectItem").Where("Visible && projectStatus == 23");
+	}
+<h1>Completed projects</h1>
+<div class="row">
+	@foreach(var item in selection){
+		<a href="@item.Url">
+			<div class="col-md-4" >
+			<div style="margin:5px;padding:20px;">	
+				@{
+				var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+				var image = umbracoHelper.Media(item.projectImage);     
+				var imageURL = image.url;}
+<div style="background-image:url('@imageURL');background-size:cover;min-height:200px;">
+				
+	</div>
+	<h3>@item.Name</h3>
+	
+			</div>
+	</div>
+		</a>
+	}
+</div>
+
+	
