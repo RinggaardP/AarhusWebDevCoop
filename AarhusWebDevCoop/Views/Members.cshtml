@@ -5,21 +5,50 @@
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 
 @{
-	Layout = "Master.cshtml";
+    Layout = "Master.cshtml";
 }
 
 @{
-var memberService = ApplicationContext.Current.Services.MemberService;
-int totalRecords;
+    var memberService = ApplicationContext.Current.Services.MemberService;
+    int totalRecords;
 }
 
-@foreach (var user in memberService.GetMembersByMemberType("Active"))
-{
-<h1>@(user.Name)</h1>
-    @user.GetValue("address");<br />
-    @user.GetValue("zip"); 
-@user.GetValue("city");<br />
- <span>Email: </span>@(user.Email)<br />
-<span>Skills: </span>@user.GetValue("skills");<br />
- //TODO fix the skills to be readable values                  
-}
+    @foreach (var user in memberService.GetMembersByMemberType("Active"))
+    {
+        var profilePicture = Umbraco.TypedMember(user.Id).GetCropUrl("photo", "portrait");
+        <div class="col-md-3">
+    <div style="height:200px; background-image:url('@profilePicture');background-size:cover;">
+       
+       
+</div>
+        <h3 style="text-transform:uppercase">@(user.Name)</h3>
+    <br />
+            <div style="font-style:italic">
+                @user.GetValue("address")<br />
+                @user.GetValue("zip") @user.GetValue("city")<br />
+                @user.Email<br />
+                
+
+            </div>
+    @{ 
+        
+        var skills = ((string)user.GetValue("skills")).Split(',');
+    }
+  
+    <hr />
+        
+
+            @foreach (string skill in skills)
+            {
+
+                <strong>@Umbraco.GetPreValueAsString(Convert.ToInt32(skill)) &nbsp;&nbsp;</strong>
+
+            }
+
+       
+    </div> }
+    
+<div>
+
+</div>
+

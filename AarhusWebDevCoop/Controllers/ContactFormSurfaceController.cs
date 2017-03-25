@@ -33,27 +33,27 @@ namespace AarhusWebDevCoop.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["success"] = true;
+               
                 return CurrentUmbracoPage();
             }
-
-
-            /*create new documents based on the form*/
-            IContent comment = Services.ContentService.CreateContent(model.Subject, CurrentPage.Id, "Message");
-            comment.SetValue("messagename", model.Name);
-            comment.SetValue("email", model.Email);
-            comment.SetValue("subject", model.Subject);
-            comment.SetValue("messagecontent", model.Message);
-
-            Services.ContentService.SaveAndPublishWithStatus(comment);
-            //Services.ContentService.Save(comment);
-
+            
             /*create new mail to send based on the form*/
             MailMessage message = new MailMessage();
             message.To.Add("jule.p3t@gmail.com");
             message.Subject = model.Subject;
             message.From = new MailAddress(model.Email, model.Name);
             message.Body = model.Message;
+
+            /*create new documents based on the form*/
+            IContent comment = Services.ContentService.CreateContent(model.Subject, CurrentPage.Id, "message");
+            comment.SetValue("messageName", model.Name);
+            comment.SetValue("email", model.Email);
+            comment.SetValue("subject", model.Subject);
+            comment.SetValue("messageContent", model.Message);
+
+            //Services.ContentService.SaveAndPublishWithStatus(comment);
+            Services.ContentService.Save(comment);
+
 
             using (SmtpClient smtp = new SmtpClient())
             {
@@ -67,9 +67,8 @@ namespace AarhusWebDevCoop.Controllers
 
                 //send mail
                 smtp.Send(message);
-
             }
-
+            TempData["success"] = true;
             return RedirectToCurrentUmbracoPage();
         }
     }
